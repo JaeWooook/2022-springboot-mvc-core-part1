@@ -4,9 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springboot.coremvc1.HelloData;
 
 import java.io.IOException;
 import java.util.Map;
@@ -82,6 +84,29 @@ public class ReqeustParamController {
     public String requestParamMap(@RequestParam Map<String, Object> paramMap) {
         log.info("username={}, age={}", paramMap.get("username"), paramMap.get("age"));
 
+        return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-v1")
+    public String modelAttributeV1(@ModelAttribute HelloData helloData) {
+        //modelAttribute가 있으면 헬로우데이터를 생성해서 helloData의 getter, setter를 찾는다.
+        //파라미터의 값을 알아서 바인딩 해준다.
+        //다른 타입의 값을 넣으면, 바인딩익셉션이 나온다.
+        log.info("username={}, age={}", helloData.getUsername(), helloData.getAge());
+        log.info("helloData={}", helloData); //toString자동으로 된다. @Data 어노테이션에서는
+        return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-v2")
+    public String modelAttributeV2(HelloData helloData) {
+        //@ModelAttribute 생략이 가능하다.
+        //@RequestParam은 생략이 가능하다. STring, int, Integer같은 단순 타입은 @RequestParam이고,
+        // 나머지는 @ModelAttribute를 생략한다. agrument resolver로 지정해둔 타입은 제외다.
+        // agrument resolver는 미리 예약된것들이다. HttpRequest같은 것들..
+        log.info("username={}, age={}", helloData.getUsername(), helloData.getAge());
+        log.info("helloData={}", helloData); //toString자동으로 된다. @Data 어노테이션에서는
         return "ok";
     }
 }
